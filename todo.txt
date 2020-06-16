@@ -1,0 +1,14 @@
+https://wordpress.stackexchange.com/questions/165754/enqueue-scripts-styles-when-shortcode-is-present
+
+sanitize inputs
+
+make CopyDiss Forms settings page
+
+    Email Credentials
+
+    Email Message Templates
+
+    Printing
+    - allowed file extensions
+
+log errors
