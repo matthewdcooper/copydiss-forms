@@ -12,3 +12,7 @@ make CopyDiss Forms settings page
     - allowed file extensions
 
 log errors
+
+nonces
+
+multiple destinations

@@ -65,13 +65,19 @@ function copydiss_shortcode_printing_form() {
 
         <h1>Upload for printing</h1>
 
-        <p>File size limit: 50mb</p>
+        <p>File size limit: <?php echo get_option( 'cdf_printing-file-size' ); ?> MB</p>
 
         <div id="div_files">
             <fieldset id="fieldset_file_1">
             <legend>File 1</legend>
             <div id="close_1" class="close">&times</div>
-                <input type="file" id="inp_file_1" name="file_1" required accept=".pdf,.jpg,.png,.docx,.dotx,.odt,.ods,.xlsx,.pub,.ai,.indd,.eps,.psd,.rtf,.txt,.gif,.tiff,.csv">
+                <input
+                    type="file"
+                    id="inp_file_1"
+                    name="file_1"
+                    required
+                    accept="<?php echo '.' . str_replace( " ", ",.", get_option( 'cdf_printing-allowed-extensions' ) ); ?>"
+                />
 
                 <div id="radio_inkcol_1" class="div_radio">
                 <label>Ink:</label>

@@ -150,14 +150,16 @@ function copydiss_forms_target_printing() {
 					throw new RuntimeException('Unknown errors.');
 			}
 	
-			// Don't accept files greater than 50mb.
-			if ($_FILES[$file_key]['size'] > 50 * 1024 * 1024) { // 50mb
+			// Don't accept files greater than n MBs.
+			if ($_FILES[$file_key]['size'] > intval( get_option( 'cdf_printing-file-size' ) ) * 1024 * 1024) { 
 				throw new RuntimeException('Exceeded filesize limit: ' . $_FILES[$file_key]['size']);
 			}
 	
-            // Check file extension is allowed. 
-            //TODO allowed file extensions from database
-            $allowed_file_extensions = ["ai", "csv", "docx", "dotx", "eps", "gif", "indd", "jpg", "ods", "odt", "pdf", "png", "psd", "pub", "rtf", "tif", "tiff", "txt", "xlsx"];
+			// Check file extension is allowed. 
+			$allowed_file_extensions = get_option( 'cdf_printing-allowed-extensions' );
+			$allowed_file_extensions = trim( $allowed_file_extensions );
+			$allowed_file_extensions = str_replace( "  ", " ", $allowed_file_extensions );
+			$allowed_file_extensions = explode( " " , $allowed_file_extensions );
             $ext = pathinfo($_FILES[$file_key]['name'], PATHINFO_EXTENSION);
 			if (in_array($ext, $allowed_file_extensions) != True) {
 				throw new RuntimeException('Invalid file extension: ' . $ext);

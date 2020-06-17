@@ -40,6 +40,11 @@ function copydiss_forms_settings() {
 
     }
 
+    // Printing
+    _add_settings_section( 'printing-upload-settings', 'Printing Uploads' );
+    _register_setting( 'printing-allowed-extensions', 'Allowed Extensions', 'printing-upload-settings' );
+    _register_setting( 'printing-file-size', 'Maximum Upload Size', 'printing-upload-settings' );
+
     // Contact Form
     _add_settings_section('contact-settings', 'Contact Form');
     _register_setting('contact-destination', 'Destination', 'contact-settings');
@@ -58,6 +63,27 @@ function copydiss_forms_settings() {
 
 
 }
+
+function copydiss_forms_printing_upload_settings() {
+    ?>
+    <p>Settings for the 'Upload for printing' form.</p>
+    <?php
+}
+
+function copydiss_forms_printing_allowed_extensions_field() {
+    $value = esc_attr( get_option( 'cdf_printing-allowed-extensions' ) );
+    echo "<input style='width: 30rem' name='cdf_printing-allowed-extensions' type='text' value='$value' />";
+    echo "<p class=\"description\">Space delimited, e.g. 'bmp jpg pdf'</p>";
+}
+
+function copydiss_forms_printing_file_size_field() {
+    $value = esc_attr( get_option( 'cdf_printing-file-size' ) );
+    echo "<input name='cdf_printing-file-size' type='number' value='$value' />";
+    echo "<p class=\"description\">(MB) per file<p>";
+}
+
+
+
 
 function copydiss_forms_contact_settings() {
     ?>
