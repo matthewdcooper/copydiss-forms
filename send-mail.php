@@ -5,8 +5,8 @@ use PHPMailer\PHPMailer\Exception;
 require 'vendor/phpmailer/phpmailer/src/Exception.php';
 require 'vendor/phpmailer/phpmailer/src/PHPMailer.php';
 require 'vendor/phpmailer/phpmailer/src/SMTP.php';
- 
-require 'mail-config.php';
+
+require_once '../copydiss-local/wp-load.php'; // so we can use 'get_option'
  
 $mail = new PHPMailer(true);
 
@@ -28,20 +28,25 @@ function send_mail($from, $fromname, $to, $toname, $subject, $message, $attachme
     }
 }
 
-function configure_email($host, $useremail, $password) {
+function configure_email() {
     global $mail;
+    $host = get_option( 'cdf_host' );
+    $email = get_option( 'cdf_email' );
+    $password = get_option('cdf_password' );
+    $protocol = get_option( 'cdf_protocol' );
+    $port = get_option( 'cdf_port' );
+
     $mail->isSMTP();
     $mail->Host = $host;
     $mail->SMTPAuth = true;
-    $mail->Username = $useremail;
+    $mail->Username = $email;
     $mail->Password = $password;
-    $mail->SMTPSecure = 'ssl';
-    $mail->Port = 465;
-    $mail->isHTML(true);
+    $mail->SMTPSecure = $protocol;
+    $mail->Port = intval( $port );
+    $mail->isHTML( true );
 }
 
-// configure using variables from 'mail-config.php'
-configure_email($host, $useremail, $password);
+configure_email();
 
 
 ?>

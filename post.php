@@ -14,8 +14,8 @@ $target = "copydiss_forms_target_" . $_POST["target"];
 $target();
 
 function copydiss_forms_target_contact() {
-    global $useremail;
-    global $username;
+    $useremail = get_option( 'cdf_email' );
+    $username = get_option( 'cdf_name' );
 
     $contactname = validate_name($_POST["contactname"]);
     $contactphone = validate_phone($_POST["contactphone"]);
@@ -41,8 +41,8 @@ function copydiss_forms_target_contact() {
 }
 
 function copydiss_forms_target_printing() {
-    global $useremail;
-    global $username;
+    $useremail = get_option( 'cdf_email' );
+    $username = get_option( 'cdf_name' );
     
 	function create_confirmation_message($contactname) {
 		$message = "";

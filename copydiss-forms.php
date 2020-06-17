@@ -18,6 +18,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 require 'form-parts.php';
 require 'form-scripts.php';
+require 'copydiss-forms-admin.php';
 
 $ajax_url = plugin_dir_url( __FILE__ ) . "post.php";
 $error_message = "We're really sorry, but something has gone wrong. Please ring us on 01379 644567.";
@@ -170,5 +171,12 @@ function copydiss_shortcode_printing_form() {
     <?php
 }
 
+add_filter( "plugin_action_links_" . plugin_basename(__FILE__), "copydiss_forms_settings_link" );
+function copydiss_forms_settings_link( $links ) {
+    $url = admin_url() . 'admin.php?page=copydiss_forms_plugin';
+    $settings_link = "<a href=\"$url\">Settings</a>";
+    array_push( $links, $settings_link );
+    return $links;
+}
 
 flush_rewrite_rules();
