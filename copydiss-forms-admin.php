@@ -18,76 +18,77 @@ function copydiss_forms_admin_menu() {
 
 function copydiss_forms_settings() {
 
+    function _add_settings_section($name, $title) {
+        add_settings_section(
+            'copydiss-forms-' . $name, // section slug
+            $title, // title
+            'copydiss_forms_' . str_replace( '-', '_', $name ), // callback
+            'copydiss-forms-settings' // settings page slug
+        );
+
+    }
+
+    function _register_setting($name, $label, $section) {
+        register_setting( 'copydiss-forms-settings', 'cdf_' . $name);
+        add_settings_field(
+            'copydiss-forms-' . $name .'-field', // field slug
+            $label, // field label
+            'copydiss_forms_' . str_replace( '-', '_', $name ) . '_field', // html callback
+            'copydiss-forms-settings', // settings page slug
+            'copydiss-forms-' . $section // section slug
+        );
+
+    }
+
+    // Contact Form
+    _add_settings_section('contact-settings', 'Contact Form');
+    _register_setting('contact-destination', 'Destination', 'contact-settings');
+    _register_setting('contact-destination-name', 'Destination Name', 'contact-settings');
+    _register_setting('contact-subject', 'Subject', 'contact-settings');
+    _register_setting('contact-body', 'Body', 'contact-settings');
+
     // Email Settings
-    add_settings_section( 
-        'copydiss-forms-email-settings',    // section slug
-        'Email Settings',                   // title
-        'copydiss_forms_email_settings',    // callback
-        'copydiss-forms-settings'           // settings page slug
-    );
-
-    register_setting( 'copydiss-forms-settings', 'cdf_name' );
-    add_settings_field(
-        'copydiss-forms-name-field',       // field slug
-        'Name',                            // field label
-        'copydiss_forms_name_field',       // callback that echos html field
-        'copydiss-forms-settings',          // settings page slug
-        'copydiss-forms-email-settings'     // section slug
-    );
-
-    register_setting( 'copydiss-forms-settings', 'cdf_email' );
-    add_settings_field(
-        'copydiss-forms-email-field',       // field slug
-        'Email',                            // field label
-        'copydiss_forms_email_field',       // callback that echos html field
-        'copydiss-forms-settings',          // settings page slug
-        'copydiss-forms-email-settings'     // section slug
-    );
-
-    register_setting( 'copydiss-forms-settings', 'cdf_password' );
-    add_settings_field(
-        'copydiss-forms-password-field',       // field slug
-        'Password',                            // field label
-        'copydiss_forms_password_field',       // callback that echos html field
-        'copydiss-forms-settings',          // settings page slug
-        'copydiss-forms-email-settings'     // section slug
-    );
-
-    register_setting( 'copydiss-forms-settings', 'cdf_host' );
-    add_settings_field(
-        'copydiss-forms-host-field',       // field slug
-        'Host',                            // field label
-        'copydiss_forms_host_field',       // callback that echos html field
-        'copydiss-forms-settings',          // settings page slug
-        'copydiss-forms-email-settings'     // section slug
-    );
-
-    register_setting( 'copydiss-forms-settings', 'cdf_protocol' );
-    add_settings_field(
-        'copydiss-forms-protocol-field',       // field slug
-        'Protocol',                            // field label
-        'copydiss_forms_protocol_field',       // callback that echos html field
-        'copydiss-forms-settings',          // settings page slug
-        'copydiss-forms-email-settings'     // section slug
-    );
-
-    register_setting( 'copydiss-forms-settings', 'cdf_port' );
-    add_settings_field(
-        'copydiss-forms-port-field',       // field slug
-        'Port',                            // field label
-        'copydiss_forms_port_field',       // callback that echos html field
-        'copydiss-forms-settings',          // settings page slug
-        'copydiss-forms-email-settings'     // section slug
-    );
-
-
-
-
-
-
+    _add_settings_section('email-settings', 'Email Settings');
+    _register_setting('name', 'Name', 'email-settings');
+    _register_setting('email', 'Email', 'email-settings');
+    _register_setting('password', 'Password', 'email-settings');
+    _register_setting('host', 'Host', 'email-settings');
+    _register_setting('protocol', 'Protocol', 'email-settings');
+    _register_setting('port', 'Port', 'email-settings');
 
 
 }
+
+function copydiss_forms_contact_settings() {
+    ?>
+    <p>The email template used to forward messages from the contact form.</p>
+    <p>Available variables: [customer-name] [customer-phone] [customer-email] [customer-message] [user-name]</p>
+    <?php
+}
+
+function copydiss_forms_contact_destination_field() {
+    $value = esc_attr( get_option( 'cdf_contact-destination' ) );
+    echo "<input name='cdf_contact-destination' type='text' value='$value' />";
+}
+
+function copydiss_forms_contact_destination_name_field() {
+    $value = esc_attr( get_option( 'cdf_contact-destination-name' ) );
+    echo "<input name='cdf_contact-destination-name' type='text' value='$value' />";
+}
+
+
+function copydiss_forms_contact_subject_field() {
+    $value = esc_attr( get_option( 'cdf_contact-subject' ) );
+    echo "<input name='cdf_contact-subject' type='text' value='$value' />";
+}
+
+function copydiss_forms_contact_body_field() {
+    $value = esc_attr( get_option( 'cdf_contact-body' ) );
+    echo "<textarea name='cdf_contact-body' rows=20 cols=40>$value</textarea>";
+}
+
+
+
 
 
 function copydiss_forms_email_settings() {

@@ -13,30 +13,42 @@ require 'validate.php';
 $target = "copydiss_forms_target_" . $_POST["target"];
 $target();
 
+function copydiss_forms_parse_template($s, $vars) {
+	foreach ($vars as $k => $v) {
+		$s = str_replace( $k, $v, $s);
+	}
+	return nl2br($s);
+}
+
 function copydiss_forms_target_contact() {
     $useremail = get_option( 'cdf_email' );
-    $username = get_option( 'cdf_name' );
+	$username = get_option( 'cdf_name' );
+	$destination = get_option( 'cdf_contact-destination' );
+	$destination_name = get_option( 'cdf_contact-destination-name' );
 
     $contactname = validate_name($_POST["contactname"]);
     $contactphone = validate_phone($_POST["contactphone"]);
     $contactemail = validate_email($_POST["contactemail"]);
-    $message = validate_message($_POST["message"]);
+	$message = validate_message($_POST["message"]);
+	
+	$vars = array(
+		'[customer-name]' => $contactname,
+		'[customer-phone]' => $contactphone,
+		'[customer-email]' => $contactemail,
+		'[customer-message]' => $message,
+		'[user-name]' => $username
+	);
 
-    $subject = "Web Message From " . $contactname;
-        
-    $body = "";
-    $body .= "Dear Print Assistant,<br/><br/>";
-    $body .= "We have received a new message from " . $contactname . ".<br/><br/>";
-    $body .= "Tel: " . $contactphone . "<br/>";
-    $body .= "Email: " . $contactemail . "<br/>";
-    $body .= "Message: <br/><br/>";
-    $body .= str_replace("\r\n", "<br/><br/>", $message);
-    $body .= "<br/><br/>Kind regards,<br/>CopyDiss";
+	$subject = copydiss_forms_parse_template( get_option( 'cdf_contact-subject' ), $vars );
+	$body = copydiss_forms_parse_template( get_option( 'cdf_contact-body' ), $vars );
 
-    send_mail($useremail, $username,
-            $contactemail, $contactname,
-            $subject,
-            $body, []);
+    send_mail(
+		$useremail, $username,
+		$destination, $destination_name,
+        $subject,
+		$body,
+		[]
+	);
 
 }
 
