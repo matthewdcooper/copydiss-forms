@@ -3,11 +3,10 @@ sanitize inputs
 
 log errors
 
-nonces
-
 multiple destinations
 
 validation/sanitization
 
-
 error feedback for user
+
+photo form

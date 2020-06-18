@@ -1,11 +1,22 @@
 <?php
+require_once '../copydiss-local/wp-load.php'; // so we can use 'get_option'
 
+// honey
 if ($_SERVER['REQUEST_METHOD'] != 'POST') die();
 if ($_POST["the_password"] != "") die(); // no honey
 
+// duration
 $start = intval($_POST["timestamp"]);
 $duration = time() - $start;
 if ($duration < 3) die('too fast'); // too fast, must be bot
+
+// nonce
+if ( ! isset( $_POST['cdf-nonce'] )
+	|| ! wp_verify_nonce( $_POST['cdf-nonce'], 'cdf-nonce' )
+) {
+	die("Unverifed nonce.");
+}
+
 
 require 'send-mail.php';
 require 'validate.php';

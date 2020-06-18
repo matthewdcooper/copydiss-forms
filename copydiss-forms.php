@@ -29,6 +29,7 @@ function copydiss_shortcode_contact_form() {
     global $error_message;
     ?>
     <form id="contact_form" class="copydiss-form" enctype="multipart/form-data">
+        <?php wp_nonce_field( 'cdf-nonce', 'cdf-nonce' ) ?>
         <?php echo copydiss_form_part_timestamp(); ?>
         <?php echo copydiss_form_part_honey("the_password"); ?>
         <?php echo copydiss_form_part_target("contact"); ?>
@@ -59,6 +60,7 @@ function copydiss_shortcode_printing_form() {
     global $error_message;
     ?>
     <form id="printing_form" class="copydiss-form" enctype="multipart/form-data">
+        <?php wp_nonce_field( 'cdf-nonce', 'cdf-nonce' ) ?>
         <?php echo copydiss_form_part_timestamp(); ?>
         <?php echo copydiss_form_part_honey("the_password"); ?>
         <?php echo copydiss_form_part_target("printing"); ?>
