@@ -1,20 +1,20 @@
 <?php
-require_once '../copydiss-local/wp-load.php'; // so we can use 'get_option'
+require_once '../copydiss-local/wp-load.php';
 
 // honey
-if ($_SERVER['REQUEST_METHOD'] != 'POST') die();
-if ($_POST["the_password"] != "") die(); // no honey
+if ($_SERVER['REQUEST_METHOD'] != 'POST') log_and_die('not a post request');
+if ($_POST["the_password"] != "") log_and_die('honey error'); // no honey
 
 // duration
 $start = intval($_POST["timestamp"]);
 $duration = time() - $start;
-if ($duration < 3) die('too fast'); // too fast, must be bot
+if ($duration < 3) log_and_die('form submitted too fast'); // too fast, must be bot
 
 // nonce
 if ( ! isset( $_POST['cdf-nonce'] )
 	|| ! wp_verify_nonce( $_POST['cdf-nonce'], 'cdf-nonce' )
 ) {
-	die("Unverifed nonce.");
+	log_and_die("Unverifed number used once.");
 }
 
 
@@ -220,10 +220,16 @@ function copydiss_forms_move_file($i, $contactname, $max_size, $allowed_file_ext
 		}
 	
 	} catch (RuntimeException $e) {
-		die($e->getMessage());
+		log_and_die($e->getMessage());
 	}
 	
 	return $target_file;
+}
+
+function log_and_die($msg) {
+	$line = date(DATE_ATOM) . " " . $_SERVER['REMOTE_ADDR'] . " $msg";
+	file_put_contents( "log.txt", $line, FILE_APPEND);
+	die($msg);
 }
 
 ?>

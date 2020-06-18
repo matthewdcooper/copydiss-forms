@@ -1,12 +1,6 @@
 
-sanitize inputs
-
 log errors
 
-multiple destinations
-
 validation/sanitization
-
-error feedback for user
 
 photo form
