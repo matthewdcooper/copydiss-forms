@@ -45,8 +45,21 @@ function copydiss_forms_settings() {
     _register_setting( 'printing-allowed-extensions', 'Allowed Extensions', 'printing-upload-settings' );
     _register_setting( 'printing-file-size', 'Maximum Upload Size', 'printing-upload-settings' );
 
-    // Contact Form
-    _add_settings_section('contact-settings', 'Contact Form');
+    // Printing Assistant Template
+    _add_settings_section('printing-assistant-settings', 'Printing Assistant Template');
+    _register_setting('printing-assistant-destination', 'Destination', 'printing-assistant-settings');
+    _register_setting('printing-assistant-destination-name', 'Destination Name', 'printing-assistant-settings');
+    _register_setting('printing-assistant-subject', 'Subject', 'printing-assistant-settings');
+    _register_setting('printing-assistant-body', 'Body', 'printing-assistant-settings');
+
+    // Printing Confirmation Template
+    _add_settings_section('printing-confirmation-settings', 'Printing Confirmation Template');
+    _register_setting('printing-confirmation-subject', 'Subject', 'printing-confirmation-settings');
+    _register_setting('printing-confirmation-body', 'Body', 'printing-confirmation-settings');
+
+
+    // Contact Template
+    _add_settings_section('contact-settings', 'Contact Template');
     _register_setting('contact-destination', 'Destination', 'contact-settings');
     _register_setting('contact-destination-name', 'Destination Name', 'contact-settings');
     _register_setting('contact-subject', 'Subject', 'contact-settings');
@@ -54,7 +67,7 @@ function copydiss_forms_settings() {
 
     // Email Settings
     _add_settings_section('email-settings', 'Email Settings');
-    _register_setting('name', 'Name', 'email-settings');
+    _register_setting('name', 'User Name', 'email-settings');
     _register_setting('email', 'Email', 'email-settings');
     _register_setting('password', 'Password', 'email-settings');
     _register_setting('host', 'Host', 'email-settings');
@@ -64,6 +77,11 @@ function copydiss_forms_settings() {
 
 }
 
+
+
+///////////////////////////////
+// Printing Uploads Settings //
+///////////////////////////////
 function copydiss_forms_printing_upload_settings() {
     ?>
     <p>Settings for the 'Upload for printing' form.</p>
@@ -84,7 +102,66 @@ function copydiss_forms_printing_file_size_field() {
 
 
 
+////////////////////////////////////
+// Printing Assistant Template //
+////////////////////////////////////
+function copydiss_forms_printing_assistant_settings() {
+    ?>
+    <p>The template used to inform the printing assistant of a new printing order.</p>
+    <p>Available variables: [customer-name] [customer-phone] [customer-email] [customer-message] [user-name] [user-email] [file-descriptions]</p>
+    <?php
+}
 
+function copydiss_forms_printing_assistant_destination_field() {
+    $value = esc_attr( get_option( 'cdf_printing-assistant-destination' ) );
+    echo "<input name='cdf_printing-assistant-destination' type='text' value='$value' />";
+}
+
+function copydiss_forms_printing_assistant_destination_name_field() {
+    $value = esc_attr( get_option( 'cdf_printing-assistant-destination-name' ) );
+    echo "<input name='cdf_printing-assistant-destination-name' type='text' value='$value' />";
+}
+
+function copydiss_forms_printing_assistant_subject_field() {
+    $value = esc_attr( get_option( 'cdf_printing-assistant-subject' ) );
+    echo "<input name='cdf_printing-assistant-subject' type='text' value='$value' />";
+}
+
+function copydiss_forms_printing_assistant_body_field() {
+    $value = esc_attr( get_option( 'cdf_printing-assistant-body' ) );
+    echo "<textarea name='cdf_printing-assistant-body' rows=20 cols=40>$value</textarea>";
+}
+
+
+
+
+////////////////////////////////////
+// Printing Confirmation Template //
+////////////////////////////////////
+function copydiss_forms_printing_confirmation_settings() {
+    ?>
+    <p>The template used to send a confirmation email to the customer.</p>
+    <p>Available variables: [customer-name] [customer-phone] [customer-email] [customer-message] [user-name] [user-email]</p>
+    <?php
+}
+
+function copydiss_forms_printing_confirmation_subject_field() {
+    $value = esc_attr( get_option( 'cdf_printing-confirmation-subject' ) );
+    echo "<input name='cdf_printing-confirmation-subject' type='text' value='$value' />";
+}
+
+function copydiss_forms_printing_confirmation_body_field() {
+    $value = esc_attr( get_option( 'cdf_printing-confirmation-body' ) );
+    echo "<textarea name='cdf_printing-confirmation-body' rows=20 cols=40>$value</textarea>";
+}
+
+
+
+
+
+//////////////////////
+// Contact Template //
+//////////////////////
 function copydiss_forms_contact_settings() {
     ?>
     <p>The email template used to forward messages from the contact form.</p>
@@ -117,6 +194,9 @@ function copydiss_forms_contact_body_field() {
 
 
 
+////////////////////
+// Email Settings //
+////////////////////
 function copydiss_forms_email_settings() {
     echo '<p>The server settings and credentials used to send out emails.</p>';
 }
@@ -124,6 +204,7 @@ function copydiss_forms_email_settings() {
 function copydiss_forms_name_field() {
     $value = esc_attr( get_option( 'cdf_name' ) );
     echo "<input name='cdf_name' type='text' value='$value' />";
+    echo "<p class=\"description\">Mainly used to sign above templates.</p>";
 }
 
 function copydiss_forms_email_field() {
@@ -154,9 +235,17 @@ function copydiss_forms_port_field() {
 
 
 
-
+/////////////////////////////
+// Admin Settings Template //
+/////////////////////////////
 function copydiss_forms_admin_template() {
     ?>
+    <style>
+        h2 {
+            border-top: dotted black 2px;
+            padding-top: 1rem;
+        }
+    </style>
     <h1>CopyDiss Forms Settings</h1>
     <?php settings_errors(); ?>
     <form action="options.php" method="post">

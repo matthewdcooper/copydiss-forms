@@ -2,17 +2,14 @@ https://wordpress.stackexchange.com/questions/165754/enqueue-scripts-styles-when
 
 sanitize inputs
 
-make CopyDiss Forms settings page
-
-    Email Credentials
-
-    Email Message Templates
-
-    Printing
-    - allowed file extensions
-
 log errors
 
 nonces
 
 multiple destinations
+
+validation/sanitization
+
+styling
+
+error feedback for user
