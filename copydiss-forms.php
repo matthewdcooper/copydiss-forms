@@ -25,6 +25,7 @@ $error_message = "We're really sorry, but something has gone wrong. Please ring 
 
 add_shortcode( 'copydiss_forms_contact', 'copydiss_shortcode_contact_form' );
 function copydiss_shortcode_contact_form() {
+    ob_start();
     global $ajax_url;
     global $error_message;
     ?>
@@ -51,11 +52,13 @@ function copydiss_shortcode_contact_form() {
     ); ?>
 
     <?php
+    return ob_get_clean();
 }
 
 
 add_shortcode( 'copydiss_forms_printing', 'copydiss_shortcode_printing_form' );
 function copydiss_shortcode_printing_form() {
+    ob_start();
     global $ajax_url;
     global $error_message;
     ?>
@@ -177,6 +180,7 @@ function copydiss_shortcode_printing_form() {
         $error_message
     ); ?>
     <?php
+    return ob_get_clean();
 }
 
 add_filter( "plugin_action_links_" . plugin_basename(__FILE__), "copydiss_forms_settings_link" );
