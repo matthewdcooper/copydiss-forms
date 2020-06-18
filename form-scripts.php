@@ -73,9 +73,7 @@ function copydiss_forms_submit_script($form_id, $ajax_url, $success_message, $er
         const formData = new FormData(form);
         if (typeof fileIds !== 'undefined') {
             formData.append('fileIds', fileIds);
-        } else {
-            console.log('fileIds not defined');
-        }
+        } 
         postForm(formData, "<?php echo $ajax_url ?>", (r) => {
         if (r.trim() == "ok") {
             msg.innerHTML="<p><?php echo $success_message; ?></p>";
