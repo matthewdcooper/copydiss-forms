@@ -2,19 +2,19 @@
 require_once '../copydiss-local/wp-load.php';
 
 // honey
-if ($_SERVER['REQUEST_METHOD'] != 'POST') log_and_die('not a post request');
-if ($_POST["the_password"] != "") log_and_die('honey error'); // no honey
+if ($_SERVER['REQUEST_METHOD'] != 'POST') log_and_die( 'not a post request' );
+if ($_POST["the_password"] != "") log_and_die( 'honey error' ); // no honey
 
 // duration
 $start = intval($_POST["timestamp"]);
 $duration = time() - $start;
-if ($duration < 3) log_and_die('form submitted too fast'); // too fast, must be bot
+if ($duration < 3) log_and_die( 'form submitted too fast' ); // too fast, must be bot
 
 // nonce
 if ( ! isset( $_POST['cdf-nonce'] )
 	|| ! wp_verify_nonce( $_POST['cdf-nonce'], 'cdf-nonce' )
 ) {
-	log_and_die("Unverifed number used once.");
+	log_and_die( "Unverifed number used once." );
 }
 
 
@@ -24,6 +24,7 @@ require 'validate.php';
 $target = "copydiss_forms_target_" . $_POST["target"];
 $target();
 echo "ok";
+log_and_die( "successful " . $_POST["target"], false );
 
 
 function copydiss_forms_parse_template($s, $vars) {
@@ -220,16 +221,16 @@ function copydiss_forms_move_file($i, $contactname, $max_size, $allowed_file_ext
 		}
 	
 	} catch (RuntimeException $e) {
-		log_and_die($e->getMessage());
+		log_and_die( $e->getMessage() );
 	}
 	
 	return $target_file;
 }
 
-function log_and_die($msg) {
-	$line = date(DATE_ATOM) . " " . $_SERVER['REMOTE_ADDR'] . " $msg";
-	file_put_contents( "log.txt", $line, FILE_APPEND);
-	die($msg);
+function log_and_die($msg, $should_die=true ) {
+	$line = date( DATE_ATOM ) . " " . $_SERVER['REMOTE_ADDR'] . " " .  $_SERVER['HTTP_USER_AGENT'] . " $msg\n";
+	file_put_contents( "log.txt", $line, FILE_APPEND );
+	if ( $should_die ) die( $msg );
 }
 
 ?>
