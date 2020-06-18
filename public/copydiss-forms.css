@@ -1,0 +1,146 @@
+
+#btn_submit {
+	width: 100%;
+	color: #bed5be;
+	background-color: #3A7818;
+	font-size: 1.2rem;
+	transition-duration: 0.5s;
+}
+
+#btn_submit:hover {
+	background-color: #bed5be;
+	color: black;
+}
+
+.copydiss-form {
+	margin: 2rem auto 2rem auto !important; /* overrides useful-box */
+	max-width: 100%;
+    width: 40em;
+
+    /* useful box */
+    border-radius: 0.4em;
+    border: solid 2px #669966;
+    background-color: white;
+    max-width: 90%;
+    margin: auto;
+    padding: 1rem;
+}
+
+.copydiss-form h1 {
+	text-align: center;
+}
+
+.copydiss-form div {
+	margin: 1em 0 1em 0;
+}
+
+.div_radio span label {
+	vertical-align: middle;
+	text-align: left;
+}
+
+input[type="radio"] {
+	margin: 0;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+input[type="file"] {
+	display: block;
+	margin: 1em 0 1em 0;
+	box-shadow: none; /* otherwise an error box surrounds newly added file inputs */
+	border: solid #3A7818 2px;
+	padding: 0.2rem;
+}
+
+input[type="text"] {
+	display: block;
+	margin: 1em 0 1em 0;
+	width: 95%;
+}
+
+input[type="number"] {
+	width: 3em;
+}
+
+fieldset {
+	margin: 1em auto 1em auto;
+}
+
+#div_files label {
+	display: inline-block;
+	width: 5em;
+}
+
+.check-for-message:checked ~ label {
+	opacity: 100% !important;
+	transition-duration: 0.2s;
+}
+
+.close {
+	float: right;
+	font-size: 2em;
+	margin: -20px -5px 0 0 !important;
+	padding: 0;
+}
+
+.close {
+	display: none;
+	cursor: default;
+}
+
+.close:hover {
+	font-weight: bold;
+}
+
+/* SPINNER */
+.spinner {
+	margin: 0 auto 0 auto !important;
+	width: 70px;
+	text-align: center;
+}
+
+.spinner > div {
+	width: 18px;
+	height: 18px;
+	background-color: #fff;
+
+	border-radius: 100%;
+	display: inline-block;
+	-webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+	animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+	-webkit-animation-delay: -0.32s;
+	animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+	-webkit-animation-delay: -0.16s;
+	animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+	0%,
+	80%,
+	100% {
+		-webkit-transform: scale(0);
+	}
+	40% {
+		-webkit-transform: scale(1);
+	}
+}
+
+@keyframes sk-bouncedelay {
+	0%,
+	80%,
+	100% {
+		-webkit-transform: scale(0);
+		transform: scale(0);
+	}
+	40% {
+		-webkit-transform: scale(1);
+		transform: scale(1);
+	}
+}

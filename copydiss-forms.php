@@ -185,4 +185,11 @@ function copydiss_forms_settings_link( $links ) {
     return $links;
 }
 
+
+add_action('wp_enqueue_scripts', 'copydiss_forms_enqueue_public_styles');
+function copydiss_forms_enqueue_public_styles() {
+	wp_enqueue_style('copydiss-forms-css', 
+					  plugin_dir_url(__FILE__) . 'public/copydiss-forms.css');
+}
+
 flush_rewrite_rules();
