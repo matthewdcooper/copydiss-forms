@@ -86,3 +86,20 @@ function copydiss_forms_submit_script($form_id, $ajax_url, $success_message, $er
     </script>
     <?php
 }
+
+
+function copydiss_forms_show_final_size_script() {
+    ?>
+    <script>
+    const showFinalSize = (selectSize) => {
+        const id = selectSize.name.substr(selectSize.name.lastIndexOf("_")+1);
+        const finalSize = document.getElementById("div_finalsize_" + id);
+        if (selectSize.value !== "original") {
+            finalSize.style.display = "block";
+        } else {
+            finalSize.style.display = "none";
+        }
+    }
+    </script>
+    <?php
+}

@@ -183,6 +183,89 @@ function copydiss_shortcode_printing_form() {
     return ob_get_clean();
 }
 
+add_shortcode( 'copydiss_forms_photo', 'copydiss_shortcode_photo_form' );
+function copydiss_shortcode_photo_form() {
+    ob_start();
+    global $ajax_url;
+    global $error_message;
+    ?>
+    <form id="photo_form" class="copydiss-form" enctype="multipart/form-data">
+        <?php wp_nonce_field( 'cdf-nonce', 'cdf-nonce' ) ?>
+        <?php echo copydiss_form_part_timestamp(); ?>
+        <?php echo copydiss_form_part_honey("the_password"); ?>
+        <?php echo copydiss_form_part_target("photo"); ?>
+        <h1>Photo Upload</h1>
+
+        <p>File size limit: <?php echo get_option( 'cdf_photo-file-size' ); ?> MB</p>
+
+        <div id="div_files">
+            <fieldset id="fieldset_file_1">
+            <legend>File 1</legend>
+            <div id="close_1" class="close">&times</div>
+                <input
+                    type="file"
+                    id="inp_file_1"
+                    name="file_1"
+                    required
+                    accept="<?php echo '.' . str_replace( " ", ",.", get_option( 'cdf_photo-allowed-extensions' ) ); ?>"
+                >
+
+                <div>
+                <label>Size:</label>
+                <select name="size_1" onchange="showFinalSize(this);">
+                    <option value="original">Original</option>
+                    <option value="enlarged">Enlarged</option>
+                    <option value="reduced">Reduced</option>
+                </select>
+                </div>
+
+                <div id="div_finalsize_1" style="display:none;">
+                <label>Final Size:</label>
+                <input type="text" id="inp_finalsize_1" name="finalsize_1" />
+                </div>
+
+                <div>
+                <label>Paper:</label>
+                <select name="paper_1">
+                    <option value="80gsm">100gsm</option>
+                    <option value="200gsm">200gsm</option>
+                    <option value="300gsm">300gsm</option>
+                    <option value="glossy">Glossy Photographic</option>
+                </select>
+                </div>
+
+                <div>
+                <label for="inp_num_copies_1">Copies :</label>
+                <input id="inp_num_copies_1" type="number" name="num_copies_1" value="1" min="1">
+                </div>
+            </fieldset>
+        </div>
+
+        <button id="btn_add_file" type="button">Add another photo</button>
+
+        <fieldset>
+            <legend>Comments</legend>
+            <textarea id="ta_comments" rows="10" name="comments" placeholder="Anything else we should know?"></textarea>
+        </fieldset>
+
+        <?php echo copydiss_form_part_contact_details(); ?>
+        <?php echo copydiss_form_part_spinner("Uploading. Please wait."); ?>
+        <button id="btn_submit" type="submit">Submit</button>
+    </form>
+    <?php echo copydiss_forms_add_file_script(); ?>
+    <?php echo copydiss_forms_show_final_size_script(); ?>
+    <?php echo copydiss_forms_submit_script(
+        "photo_form", 
+        $ajax_url, 
+        "Upload successful. Thank you.", 
+        $error_message
+    ); ?>
+    <?php
+    return ob_get_clean();
+}
+
+
+
 add_filter( "plugin_action_links_" . plugin_basename(__FILE__), "copydiss_forms_settings_link" );
 function copydiss_forms_settings_link( $links ) {
     $url = admin_url() . 'admin.php?page=copydiss_forms_plugin';

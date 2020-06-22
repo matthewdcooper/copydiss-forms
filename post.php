@@ -175,6 +175,89 @@ function copydiss_forms_target_printing() {
 	);    
 }
 
+
+function copydiss_forms_target_photo() {
+	function create_file_description($i, $target_file) {
+		global $_POST;
+
+		$size = sanitize_text_field( $_POST["size_$i"] );
+		$finalsize = sanitize_text_field( $_POST["finalsize_$i"] );
+		$paper = sanitize_text_field( $_POST["paper_$i"] );
+		$copies = sanitize_text_field( $_POST["num_copies_$i"] );
+		if ( ! is_numeric( $copies ) || intval( $copies ) < 1 ) log_and_die( "invalid copies number" );
+
+		$file_desc = "Filename: " . basename($target_file) . "<br />"
+				   . "Size: $size<br />"
+				   . "Final Size: $finalsize<br />"
+				   . "Paper: $paper<br />"
+				   . "Copies: $copies<br />";
+		return $file_desc;
+	}
+	
+	// Parse POST variables
+    $contactname = sanitize_text_field( $_POST["contactname"] );
+    $contactphone = sanitize_text_field( $_POST["contactphone"] );
+    $contactemail = sanitize_email( $_POST["contactemail"] );
+	$comments = sanitize_textarea_field( $_POST["comments"] );
+	
+    $useremail = sanitize_email( get_option( 'cdf_email' ) );
+	$username = sanitize_text_field( get_option( 'cdf_name' ) );
+
+	// move uploaded files, building list of attachments and their descriptions
+	$attachment_paths = [];
+	$file_descriptions = [];
+
+	$max_size = intval( get_option( 'cdf_photo-file-size' ) ) * pow(1024, 2);
+
+	$allowed_extensions = trim( get_option( 'cdf_photo-allowed-extensions' ) );
+	$allowed_extensions = str_replace( "  ", " ", $allowed_extensions );
+	$allowed_extensions = explode( " " , $allowed_extensions );
+
+	foreach (explode(",", $_POST['fileIds']) as $i) {
+		$attachment = copydiss_forms_move_file($i, $contactname, $max_size, $allowed_extensions);
+		$file_descriptions[] = create_file_description($i, $attachment);
+		$attachment_paths[] = $attachment;
+	}
+	
+	// send out emails
+	$vars = array(
+		'[customer-name]' => $contactname,
+		'[customer-phone]' => $contactphone,
+		'[customer-email]' => $contactemail,
+		'[customer-message]' => $comments,
+		'[user-name]' => $username,
+		'[user-email]' => $useremail,
+		'[file-descriptions]' => $file_descriptions,
+		'[file-count]' => sizeof($attachment_paths)
+	);
+
+	// to print assistant
+	$destination = copydiss_forms_parse_template( get_option( 'cdf_photo-assistant-destination' ), $vars );
+	$destination_name = copydiss_forms_parse_template( get_option( 'cdf_photo-assistant-destination-name' ), $vars );
+	$subject = copydiss_forms_parse_template( get_option( 'cdf_photo-assistant-subject' ), $vars );
+	$body = copydiss_forms_parse_template( get_option( 'cdf_photo-assistant-body' ), $vars );
+
+	send_mail(
+		$useremail, $username,
+		$destination, $destination_name,
+		$subject,
+		$body,
+		$attachment_paths
+	);
+	
+	// to customer
+	$subject = copydiss_forms_parse_template( get_option( 'cdf_photo-confirmation-subject' ), $vars );
+	$body = copydiss_forms_parse_template( get_option( 'cdf_photo-confirmation-body' ), $vars );
+
+    send_mail(
+		$useremail, $username,
+		$contactemail, $contactname,
+		$subject,
+		$body,
+		[]
+	);    
+}
+
 function copydiss_forms_move_file($i, $contactname, $max_size, $allowed_file_extensions) {
 	// using index $i to identify a file in $_FILES,
 	// check it for errors and then
