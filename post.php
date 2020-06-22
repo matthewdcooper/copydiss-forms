@@ -3,10 +3,10 @@ require_once '../copydiss-local/wp-load.php';
 
 // honey
 if ($_SERVER['REQUEST_METHOD'] != 'POST') log_and_die( 'not a post request' );
-if ($_POST["the_password"] != "") log_and_die( 'honey error' ); // no honey
+if ( sanitize_text_field( $_POST["the_password"] != "" ) ) log_and_die( 'honey error' ); // no honey
 
 // duration
-$start = intval($_POST["timestamp"]);
+$start = intval( sanitize_text_field ( $_POST["timestamp"] ) );
 $duration = time() - $start;
 if ($duration < 3) log_and_die( 'form submitted too fast' ); // too fast, must be bot
 
@@ -19,20 +19,21 @@ if ( ! isset( $_POST['cdf-nonce'] )
 
 
 require 'send-mail.php';
-require 'validate.php';
 
-$target = "copydiss_forms_target_" . $_POST["target"];
+$label = sanitize_text_field( $_POST["target"] );
+$target = "copydiss_forms_target_$label";
 $target();
+log_and_die( "successful $label", false );
 echo "ok";
-log_and_die( "successful " . $_POST["target"], false );
 
 
 function copydiss_forms_parse_template($s, $vars) {
+	$s = sanitize_textarea_field($s);
 	foreach ($vars as $k => $v) {
 		if (is_array( $v )) {
 			$expanded = "";
 			foreach ($v as $el) {
-				$expanded .= "\n---\n" . $el;
+				$expanded .= "\n---\n\n" . $el;
 			}
 			$s = str_replace( $k, $expanded, $s);
 		} else {
@@ -44,13 +45,13 @@ function copydiss_forms_parse_template($s, $vars) {
 
 
 function copydiss_forms_target_contact() {
-    $contactname = validate_name($_POST["contactname"]);
-    $contactphone = validate_phone($_POST["contactphone"]);
-    $contactemail = validate_email($_POST["contactemail"]);
-	$message = validate_message($_POST["message"]);
+    $contactname = sanitize_text_field( $_POST["contactname"] );
+    $contactphone = sanitize_text_field( $_POST["contactphone"] );
+    $contactemail = sanitize_email( $_POST["contactemail"] );
+	$message = sanitize_textarea_field( $_POST["message"] );
 	
-    $useremail = get_option( 'cdf_email' );
-	$username = get_option( 'cdf_name' );
+    $useremail = sanitize_email( get_option( 'cdf_email' ) );
+	$username = sanitize_text_field( get_option( 'cdf_name' ) );
 
 	$vars = array(
 		'[customer-name]' => $contactname,
@@ -78,27 +79,46 @@ function copydiss_forms_target_contact() {
 
 function copydiss_forms_target_printing() {
 	function create_file_description($i, $target_file) {
-		// TODO: validate/sanitize
 		global $_POST;
+
+		$inkcolor = sanitize_text_field( $_POST["inkcolor_$i"] );
+		if (! ($inkcolor === "black" || $inkcolor === "color") ) log_and_die( "invalid ink" );
+
+		$papercolor = sanitize_text_field( $_POST["papercolor_$i"] );
+		if (! ($papercolor === "white" || $papercolor === "color") ) log_and_die( "invalid paper color" );
+
+		$sided = sanitize_text_field( $_POST["sided_$i"] );
+		if (! ($sided === "single" || $sided === "double") ) log_and_die( "invalid sided value" );
+
+		$pages = sanitize_text_field( $_POST["num_pages_$i"] );
+		if ( ! is_numeric( $pages ) || intval( $pages ) < 1 ) log_and_die( "invalid pages number" );
+
+		$copies = sanitize_text_field( $_POST["num_copies_$i"] );
+		if ( ! is_numeric( $copies ) || intval( $copies ) < 1 ) log_and_die( "invalid copies number" );
+
+		$size = sanitize_text_field( $_POST["size_$i"] );
+
+		$quality = sanitize_text_field( $_POST["quality_$i"] );
+
 		$file_desc = "Filename: " . basename($target_file) . "<br />"
-				   . "Ink Colour: " . $_POST["inkcolor_".$i] . "<br />"
-				   . "Paper Colour: " . $_POST["papercolor_".$i] . "<br />"
-				   . "Sided: " . $_POST["sided_".$i] . "<br />"
-				   . "Pages : " . $_POST["num_pages_".$i] . "<br />"
-				   . "Copies: " . $_POST["num_copies_".$i] . "<br />"
-				   . "Size: " . $_POST["size_".$i] . "<br />"
-				   . "Quality: " . $_POST["quality_".$i] . "<br />";
+				   . "Ink Colour: $inkcolor<br />"
+				   . "Paper Colour: $papercolor<br />"
+				   . "Sided: $sided<br />"
+				   . "Pages: $pages<br />"
+				   . "Copies: $copies<br />"
+				   . "Size: $size<br />"
+				   . "Quality: $quality<br />";
 		return $file_desc;
 	}
 	
 	// Parse POST variables
-	$contactname = validate_name($_POST["contactname"]);
-	$contactphone = validate_phone($_POST["contactphone"]);
-	$contactemail = validate_email($_POST["contactemail"]);
-	$comments = validate_message($_POST['comments']);
+    $contactname = sanitize_text_field( $_POST["contactname"] );
+    $contactphone = sanitize_text_field( $_POST["contactphone"] );
+    $contactemail = sanitize_email( $_POST["contactemail"] );
+	$comments = sanitize_textarea_field( $_POST["comments"] );
 	
-    $useremail = get_option( 'cdf_email' );
-	$username = get_option( 'cdf_name' );
+    $useremail = sanitize_email( get_option( 'cdf_email' ) );
+	$username = sanitize_text_field( get_option( 'cdf_name' ) );
 
 	// move uploaded files, building list of attachments and their descriptions
 	$attachment_paths = [];

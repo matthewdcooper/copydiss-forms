@@ -1,6 +1,0 @@
-
-log errors
-
-validation/sanitization
-
-photo form
